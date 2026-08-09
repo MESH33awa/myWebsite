@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta MESH33="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人名片 - 在线简历</title>
+    <style>
+        :root {
+            --primary: #5b9bd5;
+            --primary-light: #7eb8e8;
+            --primary-dark: #4a85c0;
+            --primary-soft: #e8f2fb;
+            --accent: #6db3f2;
+            --bg: #ffffff;
+            --bg-alt: #f8fafc;
+            --bg-soft: #f0f5fa;
+            --text: #2d3748;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+            --text-light: #a0aec0;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+            --shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+            --shadow-xl: 0 20px 48px rgba(0, 0, 0, 0.1), 0 8px 20px rgba(0, 0, 0, 0.05);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-full: 50%;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+            --max-width: 720px;
+            --nav-height: 60px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: var(--nav-height);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            font-size: 16px;
+            min-height: 100vh;
+            background-image:
+                radial-gradient(ellipse at 20% 10%, rgba(107, 163, 222, 0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 40%, rgba(126, 184, 232, 0.05) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 80%, rgba(91, 155, 213, 0.04) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* ========== 导航栏 ========== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: var(--nav-height);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border-bottom: 1px solid transparent;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar.scrolled {
+            border-bottom-color: var(--border);
+            box-shadow: var(--shadow-sm);
+            background: rgba(255, 255, 255, 0.92);
+        }
+
+        .navbar-inner {
+            max-width: var(--max-width);
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--primary-dark);
+            letter-spacing: -0.01em;
+            white-space: nowrap;
+            text-decoration: none;
+            transition: color var(--transition);
+        }
+        .nav-brand:hover {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            list-style: none;
+        }
+
+        .nav-links li a {
+            display: inline-block;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: 20px;
+            transition: all var(--transition);
+            white-space: nowrap;
+            letter-spacing: 0.01em;
+            position: relative;
+        }
+
+        .nav-links li a:hover {
+            color: var(--primary);
+            background: var(--primary-soft);
+        }
+        .nav-links li a.active {
+            color: var(--primary);
+            background: var(--primary-soft);
+            font-weight: 600;
+        }
+
+        /* 移动端汉堡菜单 */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px;
+            background: none;
+            border: none;
+            z-index: 1001;
+        }
+        .hamburger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--text);
+            border-radius: 2px;
+            transition: all var(--transition);
+            transform-origin: center;
+        }
+        .hamburger.active span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+        .hamburger.active span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        /* ========== 主体容器 ========== */
+        .main-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ========== 区域通用样式 ========== */
+        section {
+            padding: 50px 0 40px;
+            min-height: auto;
+        }
+        section:first-of-type {
+            padding-top: calc(var(--nav-height) + 40px);
+        }
+
+        .section-tag {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--primary);
+            background: var(--primary-soft);
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+            line-height: 1.3;
+        }
+
+        /* ========== 首页 / 英雄区 ========== */
+        .hero {
+            text-align: center;
+            padding-top: calc(var(--nav-height) + 50px);
+            padding-bottom: 30px;
+        }
+
+        .avatar-wrapper {
+            display: inline-block;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .avatar-ring {
+            position: absolute;
+            inset: -6px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, #a8d4f0, #6db3f2, #4a90d9, #7ec8e3);
+            background-size: 300% 300%;
+            animation: ringShimmer 6s ease-in-out infinite;
+            z-index: 0;
+            opacity: 0.7;
+            filter: blur(2px);
+        }
+        @keyframes ringShimmer {
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+            25% {
+                background-position: 100% 0%;
+            }
+            50% {
+                background-position: 100% 100%;
+            }
+            75% {
+                background-position: 0% 100%;
+            }
+        }
+        .avatar {
+            width: 130px;
+            height: 130px;
+            border-radius: var(--radius-full);
+            object-fit: cover;
+            display: block;
+            position: relative;
+            z-index: 1;
+            border: 4px solid #ffffff;
+            box-shadow: var(--shadow-lg);
+            transition: transform var(--transition-slow), box-shadow var(--transition-slow);
+            background: #e8edf2;
+        }
+        .avatar:hover {
+            transform: scale(1.04);
+            box-shadow: var(--shadow-xl);
+        }
+        .avatar-fallback {
+            display: none;
+            width: 130px;
+            height: 130px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, #dce8f5, #c5d9f0);
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+            border: 4px solid #ffffff;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            z-index: 1;
+        }
+
+        .nickname {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.03em;
+            margin-bottom: 6px;
+            line-height: 1.2;
+        }
+        .tagline {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
+        .hero-divider {
+            width: 50px;
+            height: 3px;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--primary-light), var(--primary));
+            margin: 18px auto 0;
+            opacity: 0.7;
+        }
+
+        /* ========== 关于我 ========== */
+        .about-card {
+            background: var(--bg);
+            border-radius: var(--radius-lg);
+            padding: 32px 36px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: box-shadow var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .about-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-light), var(--primary), var(--primary-light));
+            opacity: 0.6;
+            border-radius: 3px 3px 0 0;
+        }
+        .about-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+        .about-card p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.85;
+            margin-bottom: 14px;
+            letter-spacing: 0.01em;
+        }
+        .about-card p:last-child {
+            margin-bottom: 0;
+        }
+        .highlight {
+            color: var(--primary-dark);
+            font-weight: 600;
+            background: linear-gradient(180deg, transparent 60%, rgba(107, 179, 242, 0.18) 60%);
+            padding: 0 3px;
+        }
+
+        .about-stats {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid var(--border);
+        }
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            background: var(--bg-soft);
+            padding: 8px 16px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+        .stat-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            flex-shrink: 0;
+        }
+
+        /* ========== 联系我 / 社交图标 ========== */
+        .contact-area {
+            text-align: center;
+        }
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 8px;
+        }
+        .social-icon-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 52px;
+            height: 52px;
+            border-radius: var(--radius-full);
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            transition: all var(--transition);
+            text-decoration: none;
+            position: relative;
+            box-shadow: var(--shadow-sm);
+        }
+        .social-icon-link:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: transparent;
+        }
+        .social-icon-link svg {
+            width: 24px;
+            height: 24px;
+            transition: transform var(--transition);
+        }
+        .social-icon-link:hover svg {
+            transform: scale(1.12);
+        }
+
+        /* 各平台悬停颜色 */
+        .social-icon-link.social-bilibili:hover {
+            background: #fff0f4;
+            border-color: #fb7299;
+            box-shadow: 0 8px 24px rgba(251, 114, 153, 0.22);
+        }
+        .social-icon-link.social-github:hover {
+            background: #f0f0f5;
+            border-color: #333;
+            box-shadow: 0 8px 24px rgba(51, 51, 51, 0.18);
+        }
+        .social-icon-link.social-weibo:hover {
+            background: #fff5f5;
+            border-color: #e6162d;
+            box-shadow: 0 8px 24px rgba(230, 22, 45, 0.2);
+        }
+        .social-icon-link.social-zhihu:hover {
+            background: #f0f7ff;
+            border-color: #0084ff;
+            box-shadow: 0 8px 24px rgba(0, 132, 255, 0.2);
+        }
+        .social-icon-link.social-email:hover {
+            background: #f5faff;
+            border-color: #5b9bd5;
+            box-shadow: 0 8px 24px rgba(91, 155, 213, 0.22);
+        }
+
+        .contact-hint {
+            margin-top: 16px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .contact-hint a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition);
+        }
+        .contact-hint a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        /* ========== 页脚 ========== */
+        .footer {
+            text-align: center;
+            padding: 30px 24px;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+            margin-top: 30px;
+            letter-spacing: 0.02em;
+        }
+        .footer span {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* ========== 回到顶部按钮 ========== */
+        .back-to-top {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 999;
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-full);
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(12px);
+            transition: all var(--transition);
+            color: var(--text-secondary);
+        }
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .back-to-top:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-3px);
+        }
+        .back-to-top svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* ========== 响应式设计 ========== */
+        @media (max-width: 768px) {
+            :root {
+                --nav-height: 54px;
+            }
+            .navbar-inner {
+                padding: 0 16px;
+            }
+            .nav-brand {
+                font-size: 1.05rem;
+            }
+            .nav-links li a {
+                padding: 7px 12px;
+                font-size: 0.88rem;
+                border-radius: 16px;
+            }
+            .avatar {
+                width: 110px;
+                height: 110px;
+            }
+            .avatar-ring {
+                inset: -5px;
+            }
+            .avatar-fallback {
+                width: 110px;
+                height: 110px;
+                font-size: 2.5rem;
+            }
+            .nickname {
+                font-size: 1.8rem;
+            }
+            .tagline {
+                font-size: 0.95rem;
+            }
+            .section-title {
+                font-size: 1.45rem;
+            }
+            .about-card {
+                padding: 24px 20px;
+            }
+            .about-card p {
+                font-size: 0.95rem;
+                line-height: 1.75;
+            }
+            .social-icon-link {
+                width: 46px;
+                height: 46px;
+            }
+            .social-icon-link svg {
+                width: 21px;
+                height: 21px;
+            }
+            .social-icons {
+                gap: 12px;
+            }
+            .hero {
+                padding-top: calc(var(--nav-height) + 36px);
+            }
+            section {
+                padding: 36px 0 28px;
+            }
+            .back-to-top {
+                bottom: 20px;
+                right: 16px;
+                width: 38px;
+                height: 38px;
+            }
+            .about-stats {
+                gap: 10px;
+            }
+            .stat-item {
+                font-size: 0.82rem;
+                padding: 6px 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --nav-height: 50px;
+            }
+            .navbar-inner {
+                padding: 0 12px;
+            }
+            .nav-brand {
+                font-size: 0.95rem;
+            }
+            /* 小屏幕导航改为汉堡菜单 */
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 65%;
+                max-width: 260px;
+                height: 100vh;
+                background: rgba(255, 255, 255, 0.97);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                flex-direction: column;
+                align-items: stretch;
+                padding: 80px 20px 30px;
+                gap: 2px;
+                transition: right var(--transition-slow);
+                box-shadow: -4px 0 20px rgba(0, 0, 0, 0.08);
+                z-index: 999;
+            }
+            .nav-links.open {
+                right: 0;
+            }
+            .nav-links li a {
+                display: block;
+                padding: 12px 16px;
+                font-size: 1rem;
+                border-radius: 10px;
+                text-align: center;
+            }
+            .hamburger {
+                display: flex;
+            }
+            /* 移动端遮罩 */
+            .nav-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.3);
+                z-index: 998;
+                transition: opacity var(--transition);
+            }
+            .nav-overlay.show {
+                display: block;
+            }
+
+            .avatar {
+                width: 96px;
+                height: 96px;
+            }
+            .avatar-ring {
+                inset: -4px;
+            }
+            .avatar-fallback {
+                width: 96px;
+                height: 96px;
+                font-size: 2.2rem;
+            }
+            .nickname {
+                font-size: 1.55rem;
+            }
+            .tagline {
+                font-size: 0.88rem;
+            }
+            .section-title {
+                font-size: 1.3rem;
+            }
+            .about-card {
+                padding: 20px 16px;
+                border-radius: var(--radius);
+            }
+            .about-card p {
+                font-size: 0.9rem;
+                line-height: 1.7;
+            }
+            .social-icon-link {
+                width: 40px;
+                height: 40px;
+            }
+            .social-icon-link svg {
+                width: 18px;
+                height: 18px;
+            }
+            .social-icons {
+                gap: 10px;
+            }
+            .hero {
+                padding-top: calc(var(--nav-height) + 28px);
+            }
+            section {
+                padding: 28px 0 20px;
+            }
+            .main-container {
+                padding: 0 16px;
+            }
+            .back-to-top {
+                bottom: 16px;
+                right: 12px;
+                width: 34px;
+                height: 34px;
+            }
+            .about-stats {
+                gap: 8px;
+                margin-top: 14px;
+                padding-top: 14px;
+            }
+            .stat-item {
+                font-size: 0.78rem;
+                padding: 5px 10px;
+                border-radius: 14px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .avatar {
+                width: 80px;
+                height: 80px;
+            }
+            .avatar-ring {
+                inset: -3px;
+            }
+            .avatar-fallback {
+                width: 80px;
+                height: 80px;
+                font-size: 1.8rem;
+            }
+            .nickname {
+                font-size: 1.35rem;
+            }
+            .tagline {
+                font-size: 0.82rem;
+            }
+            .social-icon-link {
+                width: 36px;
+                height: 36px;
+            }
+            .social-icon-link svg {
+                width: 16px;
+                height: 16px;
+            }
+            .social-icons {
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== 导航栏 ==================== -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <a href="#home" class="nav-brand" aria-label="回到首页">💠个人名片</a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home" class="active" data-section="home">首页</a></li>
+                <li><a href="#about" data-section="about">关于我</a></li>
+                <li><a href="#contact" data-section="contact">联系我</a></li>
+            </ul>
+            <button class="hamburger" id="hamburger" aria-label="菜单" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+    <!-- 移动端遮罩 -->
+    <div class="nav-overlay" id="navOverlay"></div>
+
+    <!-- ==================== 主体内容 ==================== -->
+    <div class="main-container">
+
+        <!-- 首页 / 英雄区 -->
+        <section id="home" class="hero">
+            <div class="avatar-wrapper">
+                <div class="avatar-ring"></div>
+                <!-- 在线占位图，加载失败时显示fallback -->
+                <img
+                class="avatar"
+                id="avatarImg"
+                src="https://i0.hdslb.com/bfs/face/8c7090ff1a8c53280b4154cde1a235ebee2fa277.jpg@128w_128h_1c_1s.webp"
+                alt="个人头像"
+                loading="eager"
+                onerror="this.style.display='none';document.getElementById('avatarFallback').style.display='flex';"
+                >
+                <div class="avatar-fallback" id="avatarFallback" style="display:none;">名</div>
+            </div>
+            <h1 class="nickname">MESH33</h1>
+            <p class="tagline">bro玩MC，mario</p>
+            <div class="hero-divider"></div>
+        </section>
+
+        <!-- 关于我 -->
+        <section id="about">
+            <span class="section-tag">About</span>
+            <h2 class="section-title">关于我</h2>
+            <div class="about-card">
+                <p>
+                    你好！我是一名<span class="highlight">游戏爱好者🎮</span>，始终保持着对游戏的无限热爱。我也是一名<span class="highlight">系统爱好者💾</span>
+                </p>
+                <div class="about-stats">
+                    <span class="stat-item"><span class="stat-dot"></span> 系统爱好者</span>
+                    <span class="stat-item"><span class="stat-dot"></span> 游戏爱好者</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 联系我 / 社交图标 -->
+        <section id="contact" class="contact-area">
+            <span class="section-tag">Contact</span>
+            <h2 class="section-title">联系我</h2>
+            <p style="color:var(--text-muted);margin-bottom:6px;font-size:0.95rem;">欢迎通过以下平台与我交流</p>
+            <div class="social-icons">
+                <!-- 哔哩哔哩 -->
+                <a href="https://space.bilibili.com/3546635411917170/" class="social-icon-link social-bilibili" target="_blank" rel="noopener" aria-label="哔哩哔哩" title="哔哩哔哩">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="https://space.bilibili.com/3546635411917170/">
+                        <circle cx="12" cy="12" r="11" fill="#FB7299" stroke="none"/>
+                        <rect x="6.5" y="7.5" width="11" height="8" rx="1.5" fill="white" stroke="none"/>
+                        <circle cx="9" cy="11.5" r="1" fill="#FB7299"/>
+                        <circle cx="15" cy="11.5" r="1" fill="#FB7299"/>
+                        <line x1="8" y1="4.5" x2="9.5" y2="7" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+                        <line x1="16" y1="4.5" x2="14.5" y2="7" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+                    </svg>
+                </a>
+                <!-- GitHub -->
+                <a href="https://github.com/MESH33awa" class="social-icon-link social-github" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="https://github.com/MESH33awa">
+                        <circle cx="12" cy="12" r="11" fill="#24292e" stroke="none"/>
+                        <path d="M12 3C7.03 3 3 7.03 3 12c0 3.98 2.58 7.36 6.16 8.56.45.08.62-.2.62-.43 0-.21-.01-.78-.01-1.53-2.26.42-2.84-.55-3.02-1.05-.1-.26-.54-1.05-.92-1.26-.32-.17-.77-.59-.01-.6.71-.02 1.22.66 1.39.93.81 1.37 2.11.98 2.63.75.08-.59.32-.98.58-1.2-2.01-.23-4.12-1.01-4.12-4.48 0-.99.35-1.8.93-2.44-.09-.23-.4-1.16.09-2.42 0 0 .76-.24 2.49.94A8.64 8.64 0 0 1 12 7.36c.77 0 1.54.1 2.27.3 1.73-1.18 2.49-.94 2.49-.94.49 1.26.18 2.19.09 2.42.58.64.93 1.45.93 2.44 0 3.48-2.12 4.25-4.14 4.47.33.28.62.84.62 1.69 0 1.22-.01 2.2-.01 2.5 0 .24.17.51.62.43A9.01 9.01 0 0 0 21 12c0-4.97-4.03-9-9-9z" fill="white"/>
+                    </svg>
+                </a>
+            </div>
+            <p class="contact-hint">
+                或发送邮件至 <a href="https://wx.mail.qq.com/home/index?sid=zTw5TYw_ZkMuT1NYAOk2NQAA#/compose">3914284604@qq.com</a>
+            </p>
+        </section>
+
+    </div>
+
+    <!-- ==================== 页脚 ==================== -->
+    <footer class="footer">
+        <p>© 2026 <span>MESH33</span> &nbsp;|&nbsp; 😎</p>
+    </footer>
+
+    <!-- ==================== 回到顶部按钮 ==================== -->
+    <button class="back-to-top" id="backToTop" aria-label="回到顶部" title="回到顶部">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
+
+    <!-- ==================== JavaScript ==================== -->
+    <script>
+        (function() {
+            // DOM 元素
+            const navbar = document.getElementById('navbar');
+            const navLinks = document.getElementById('navLinks');
+            const hamburger = document.getElementById('hamburger');
+            const navOverlay = document.getElementById('navOverlay');
+            const backToTop = document.getElementById('backToTop');
+            const allNavAnchors = navLinks.querySelectorAll('a[data-section]');
+            const sections = document.querySelectorAll('section[id]');
+
+            // ========== 导航栏滚动阴影 ==========
+            function updateNavShadow() {
+                if (window.scrollY > 10) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            }
+
+            // ========== 滚动监听 - 高亮当前导航项 ==========
+            function updateActiveNavLink() {
+                let currentSectionId = '';
+                const scrollPos = window.scrollY + 100;
+
+                sections.forEach(function(section) {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                        currentSectionId = section.getAttribute('id');
+                    }
+                });
+
+                allNavAnchors.forEach(function(anchor) {
+                    anchor.classList.remove('active');
+                    if (anchor.getAttribute('data-section') === currentSectionId) {
+                        anchor.classList.add('active');
+                    }
+                });
+
+                // 如果滚动到页面底部附近，高亮最后一个
+                if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+                    allNavAnchors.forEach(function(a) { a.classList.remove('active'); });
+                    const lastAnchor = navLinks.querySelector('a[data-section="contact"]');
+                    if (lastAnchor) lastAnchor.classList.add('active');
+                }
+            }
+
+            // ========== 回到顶部按钮 ==========
+            function updateBackToTop() {
+                if (window.scrollY > 500) {
+                    backToTop.classList.add('visible');
+                } else {
+                    backToTop.classList.remove('visible');
+                }
+            }
+
+            // ========== 综合滚动处理 ==========
+            function onScroll() {
+                updateNavShadow();
+                updateActiveNavLink();
+                updateBackToTop();
+            }
+
+            // ========== 平滑滚动到目标 ==========
+            function smoothScrollTo(targetEl) {
+                const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue(
+                    '--nav-height').trim()) || 56;
+                const targetTop = targetEl.getBoundingClientRect().top + window.pageYOffset - navH - 8;
+                window.scrollTo({
+                    top: targetTop,
+                    behavior: 'smooth'
+                });
+            }
+
+            // ========== 导航链接点击 ==========
+            allNavAnchors.forEach(function(anchor) {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('data-section');
+                    const targetSection = document.getElementById(sectionId);
+                    if (targetSection) {
+                        smoothScrollTo(targetSection);
+                    }
+                    // 关闭移动端菜单
+                    closeMobileMenu();
+                });
+            });
+
+            // ========== 移动端菜单切换 ==========
+            function openMobileMenu() {
+                navLinks.classList.add('open');
+                hamburger.classList.add('active');
+                navOverlay.classList.add('show');
+                hamburger.setAttribute('aria-expanded', 'true');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMobileMenu() {
+                navLinks.classList.remove('open');
+                hamburger.classList.remove('active');
+                navOverlay.classList.remove('show');
+                hamburger.setAttribute('aria-expanded', 'false');
+                document.body.style.overflow = '';
+            }
+
+            function toggleMobileMenu() {
+                if (navLinks.classList.contains('open')) {
+                    closeMobileMenu();
+                } else {
+                    openMobileMenu();
+                }
+            }
+
+            hamburger.addEventListener('click', toggleMobileMenu);
+            navOverlay.addEventListener('click', closeMobileMenu);
+
+            // ESC 关闭菜单
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && navLinks.classList.contains('open')) {
+                    closeMobileMenu();
+                    hamburger.focus();
+                }
+            });
+
+            // ========== 回到顶部按钮点击 ==========
+            backToTop.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            // ========== 窗口大小变化时关闭移动菜单 ==========
+            let resizeTimeout;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(function() {
+                    if (window.innerWidth > 480 && navLinks.classList.contains('open')) {
+                        closeMobileMenu();
+                    }
+                }, 200);
+            });
+
+            // ========== 初始化 ==========
+            updateNavShadow();
+            updateActiveNavLink();
+            updateBackToTop();
+            window.addEventListener('scroll', onScroll, { passive: true });
+
+            // ========== 头像图片加载优化 ==========
+            var avatarImg = document.getElementById('avatarImg');
+            var avatarFallback = document.getElementById('avatarFallback');
+            // 如果图片在3秒内未加载完成，显示fallback
+            var avatarTimer = setTimeout(function() {
+                if (!avatarImg.complete || avatarImg.naturalWidth === 0) {
+                    avatarImg.style.display = 'none';
+                    avatarFallback.style.display = 'flex';
+                }
+            }, 3000);
+            avatarImg.addEventListener('load', function() {
+                clearTimeout(avatarTimer);
+            });
+            avatarImg.addEventListener('error', function() {
+                clearTimeout(avatarTimer);
+                avatarImg.style.display = 'none';
+                avatarFallback.style.display = 'flex';
+            });
+
+            console.log('✨ 个人名片网站已就绪 - 欢迎访问！');
+        })();
+    </script>
+</body>
+</html>
